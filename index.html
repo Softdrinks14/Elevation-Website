@@ -167,13 +167,25 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "firebase/app";
-      import { getAnalytics } from "firebase/analytics";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
+      // Import a funcționalităților necesare din SDK-urile Firebase de pe CDN
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        onSnapshot,
+        runTransaction,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-      // Your web app's Firebase configuration
+      // --- PENTING: Konfigurasi Firebase ---
+      // GANTI BAGIAN DI BAWAH INI DENGAN KONFIGURASI PROYEK FIREBASE ANDA.
+      // Anda bisa mendapatkannya dari Firebase Console -> Project Settings.
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
         apiKey: "AIzaSyAnmAaXvf3YIwxQtKgIv1NoXQ0bqeglXeI",
@@ -187,7 +199,10 @@
 
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+      const ELECTION_ID = "hod-election-2025"; // A unique ID for this election
+
       // --- USER DATABASE ---
       const userDatabase = {
         admin: { password: "adminpassword", isAdmin: true },
@@ -269,13 +284,15 @@
           await runTransaction(db, async (transaction) => {
             const electionDoc = await transaction.get(electionRef);
 
+            // Initialize document if it doesn't exist
+            let electionData;
             if (!electionDoc.exists()) {
-              await transaction.set(electionRef, getInitialElectionData());
+              electionData = getInitialElectionData();
+            } else {
+              electionData = electionDoc.data();
             }
 
-            const electionData = electionDoc.data() || getInitialElectionData();
-
-            if (electionData.voters[username]) {
+            if (electionData.voters && electionData.voters[username]) {
               throw new Error("User has already voted.");
             }
 
@@ -294,11 +311,19 @@
               ? [...electionData.log, newLogEntry]
               : [newLogEntry];
 
-            transaction.update(electionRef, {
-              votes: newVotes,
-              voters: newVoters,
-              log: newLog,
-            });
+            if (!electionDoc.exists()) {
+              transaction.set(electionRef, {
+                votes: newVotes,
+                voters: newVoters,
+                log: newLog,
+              });
+            } else {
+              transaction.update(electionRef, {
+                votes: newVotes,
+                voters: newVoters,
+                log: newLog,
+              });
+            }
           });
           console.log("Vote cast successfully!");
           return true;
@@ -331,13 +356,13 @@
         candidatesContainer.innerHTML = candidates
           .map(
             (candidate) => `
-                <div class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 transition-all hover:shadow-md hover:border-indigo-500">
-                    <div class="flex items-center">
-                        <img src="${candidate.photo}" alt="${candidate.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mr-4">
-                        <div><h3 class="text-lg font-semibold">${candidate.name}</h3></div>
-                    </div>
-                    <button data-candidate-id="${candidate.id}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 w-full sm:w-auto sm:flex-shrink-0">Vote</button>
-                </div>`
+                        <div class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 transition-all hover:shadow-md hover:border-indigo-500">
+                            <div class="flex items-center">
+                                <img src="${candidate.photo}" alt="${candidate.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mr-4">
+                                <div><h3 class="text-lg font-semibold">${candidate.name}</h3></div>
+                            </div>
+                            <button data-candidate-id="${candidate.id}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 w-full sm:w-auto sm:flex-shrink-0">Vote</button>
+                        </div>`
           )
           .join("");
       }
@@ -423,9 +448,15 @@
 
         // Listen for real-time updates
         const electionRef = doc(db, "elections", ELECTION_ID);
-        unsubscribeFromUpdates = onSnapshot(electionRef, (doc) => {
-          updateResultsUI(doc.data());
-        });
+        unsubscribeFromUpdates = onSnapshot(
+          electionRef,
+          (doc) => {
+            updateResultsUI(doc.data());
+          },
+          (error) => {
+            console.error("Error listening to election updates:", error);
+          }
+        );
       }
 
       async function setupVoterView() {
@@ -497,7 +528,9 @@
             voteSuccessMessage.classList.remove("hidden");
             disableVotingUI();
           } else {
-            alert("Failed to cast vote. Please try again.");
+            alert(
+              "Failed to cast vote. This may be because you have already voted. Please refresh the page."
+            );
             e.target.disabled = false;
             e.target.textContent = "Vote";
           }
