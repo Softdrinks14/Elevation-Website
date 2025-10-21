@@ -83,7 +83,7 @@
         <header class="mb-8 md:mb-12">
           <div class="relative text-center">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900">
-              Head of Department Election
+              Department Election
             </h1>
             <p
               id="welcome-message"
@@ -102,58 +102,111 @@
 
         <main id="main-content">
           <!-- Voting Section -->
-          <section
-            id="voting-section"
-            class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
-          >
-            <h2 class="text-2xl font-bold mb-6 text-center">Cast Your Vote</h2>
-            <div
-              id="vote-success-message"
-              class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800"
-            >
-              Vote cast successfully! Thank you for participating.
-            </div>
-            <div
-              id="already-voted-message"
-              class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800"
-            >
-              You have already cast your vote.
-            </div>
-            <div id="candidates-container" class="space-y-4">
-              <!-- Candidate cards will be dynamically inserted here -->
+          <section id="voting-section">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <!-- Kaprodi Voting -->
+              <div
+                id="kaprodi-vote-panel"
+                class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
+              >
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                  Vote for Kaprodi
+                </h2>
+                <div
+                  id="kaprodi-vote-success"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800"
+                >
+                  Vote submitted!
+                </div>
+                <div
+                  id="kaprodi-already-voted"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800"
+                >
+                  You have already voted.
+                </div>
+                <div id="kaprodi-candidates-container" class="space-y-4"></div>
+              </div>
+              <!-- Sekprodi Voting -->
+              <div
+                id="sekprodi-vote-panel"
+                class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
+              >
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                  Vote for Sekprodi
+                </h2>
+                <div
+                  id="sekprodi-vote-success"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800"
+                >
+                  Vote submitted!
+                </div>
+                <div
+                  id="sekprodi-already-voted"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800"
+                >
+                  You have already voted.
+                </div>
+                <div id="sekprodi-candidates-container" class="space-y-4"></div>
+              </div>
             </div>
           </section>
 
           <!-- Results Section (Admin Only) -->
-          <section
-            id="results-section"
-            class="bg-white p-6 md:p-8 rounded-xl shadow-lg hidden"
-          >
-            <h2 class="text-2xl font-bold mb-6 text-center">Live Results</h2>
-            <div class="w-full max-w-md mx-auto">
-              <canvas id="resultsChart"></canvas>
-            </div>
-            <div id="results-summary" class="mt-6 text-center">
-              <p>Loading results...</p>
-            </div>
-            <div class="mt-6 text-center">
-              <button
-                id="reset-button"
-                class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
-              >
-                Reset Election Data
-              </button>
-            </div>
-            <!-- Vote Log Section -->
-            <div class="mt-8">
-              <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
-              <div
-                id="vote-log-container"
-                class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border"
-              >
-                <p class="text-gray-500 text-center">
-                  No votes have been cast yet.
-                </p>
+          <section id="results-section" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <!-- Kaprodi Results -->
+              <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                  Kaprodi Live Results
+                </h2>
+                <div class="w-full max-w-md mx-auto">
+                  <canvas id="kaprodiResultsChart"></canvas>
+                </div>
+                <div id="kaprodi-results-summary" class="mt-6 text-center">
+                  <p>Loading results...</p>
+                </div>
+                <div class="mt-8">
+                  <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
+                  <div
+                    id="kaprodi-vote-log-container"
+                    class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border"
+                  ></div>
+                </div>
+                <div class="mt-6 text-center">
+                  <button
+                    id="reset-kaprodi-button"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full sm:w-auto"
+                  >
+                    Reset Kaprodi Data
+                  </button>
+                </div>
+              </div>
+              <!-- Sekprodi Results -->
+              <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                  Sekprodi Live Results
+                </h2>
+                <div class="w-full max-w-md mx-auto">
+                  <canvas id="sekprodiResultsChart"></canvas>
+                </div>
+                <div id="sekprodi-results-summary" class="mt-6 text-center">
+                  <p>Loading results...</p>
+                </div>
+                <div class="mt-8">
+                  <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
+                  <div
+                    id="sekprodi-vote-log-container"
+                    class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border"
+                  ></div>
+                </div>
+                <div class="mt-6 text-center">
+                  <button
+                    id="reset-sekprodi-button"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full sm:w-auto"
+                  >
+                    Reset Sekprodi Data
+                  </button>
+                </div>
               </div>
             </div>
           </section>
@@ -167,7 +220,6 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-      // Import a funcționalităților necesare din SDK-urile Firebase de pe CDN
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
       import {
         getFirestore,
@@ -185,8 +237,6 @@
 
       // --- PENTING: Konfigurasi Firebase ---
       // GANTI BAGIAN DI BAWAH INI DENGAN KONFIGURASI PROYEK FIREBASE ANDA.
-      // Anda bisa mendapatkannya dari Firebase Console -> Project Settings.
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
         apiKey: "AIzaSyAnmAaXvf3YIwxQtKgIv1NoXQ0bqeglXeI",
         authDomain: "pemilihan-ketua-jurusan.firebaseapp.com",
@@ -201,44 +251,129 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const auth = getAuth(app);
-      const ELECTION_ID = "hod-election-2025"; // A unique ID for this election
+
+      // --- ELECTION IDs ---
+      const KAPRODI_ELECTION_ID = "kaprodi-election-2025";
+      const SEKPRODI_ELECTION_ID = "sekprodi-election-2025";
 
       // --- USER DATABASE ---
       const userDatabase = {
         admin: { password: "adminpassword", isAdmin: true },
-        user1: { password: "password1", isAdmin: false },
-        user2: { password: "password2", isAdmin: false },
-        user3: { password: "password3", isAdmin: false },
-        user4: { password: "password4", isAdmin: false },
-        user5: { password: "password5", isAdmin: false },
-        user6: { password: "password6", isAdmin: false },
-        user7: { password: "password7", isAdmin: false },
-        user8: { password: "password8", isAdmin: false },
-        user9: { password: "password9", isAdmin: false },
-        user10: { password: "password10", isAdmin: false },
+        agus: { password: "agus", isAdmin: false },
+        ali: { password: "ali", isAdmin: false },
+        aniek: { password: "aniek", isAdmin: false },
+        aulia: { password: "aulia", isAdmin: false },
+        dian: { password: "dian", isAdmin: false },
+        dyah: { password: "dyah", isAdmin: false },
+        erfan: { password: "erfan", isAdmin: false },
+        erny: { password: "erny", isAdmin: false },
+        fatimah: { password: "fatimah", isAdmin: false },
+        henik: { password: "henik", isAdmin: false },
+        ilmam: { password: "ilmam", isAdmin: false },
+        muhidin: { password: "muhidin", isAdmin: false },
+        izza: { password: "izza", isAdmin: false },
+        padhina: { password: "padhina", isAdmin: false },
+        sri: { password: "sri", isAdmin: false },
+        syarif: { password: "syarif", isAdmin: false },
+        untung: { password: "untung", isAdmin: false },
+        wahono: { password: "wahono", isAdmin: false },
       };
 
-      // --- ELECTION CONFIGURATION ---
-      const candidates = [
+      // --- CANDIDATE CONFIGURATION ---
+      const kaprodiCandidates = [
         {
-          id: "candidate1",
-          name: "Dr. Evelyn Reed",
-          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=ER",
+          id: "kaprodi1",
+          name: "Agus Zainudin, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=AZ",
         },
         {
-          id: "candidate2",
-          name: "Prof. Samuel Carter",
-          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=SC",
+          id: "kaprodi2",
+          name: "Aulia Zakia, SP. MSi",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=AZ",
         },
         {
-          id: "candidate3",
-          name: "Dr. Olivia Chen",
-          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=OC",
+          id: "kaprodi3",
+          name: "Dian Indratmi, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=DI",
+        },
+        {
+          id: "kaprodi4",
+          name: "Erny Ishartati, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=EI",
+        },
+        {
+          id: "kaprodi5",
+          name: "Fatimah Nursandi, Dr. Ir. M.Si.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=FN",
+        },
+        {
+          id: "kaprodi6",
+          name: "Ilmam Zul Fahmi, SP. M.Sc",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=IZ",
+        },
+        {
+          id: "kaprodi7",
+          name: "Nur Izzatul Maulidah, SP. Msc. Ph.D",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=NI",
+        },
+        {
+          id: "kaprodi8",
+          name: "Padhina Pangestika, SP. MP",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=PP",
+        },
+        {
+          id: "kaprodi9",
+          name: "Sri Mursiani Arifah, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=SM",
+        },
+        {
+          id: "kaprodi10",
+          name: "Untung Santoso, Dr. Drs. M.Si.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=US",
+        },
+        {
+          id: "kaprodi11",
+          name: "Wahono, Dr. Ir. M.T.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=WA",
         },
       ];
-      const chartColors = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444"];
+      const sekprodiCandidates = [
+        {
+          id: "sekprodi1",
+          name: "Aulia Zakia, SP. MSi",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=AZ",
+        },
+        {
+          id: "sekprodi2",
+          name: "Ilmam Zul Fahmi, SP. M.Sc",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=IZ",
+        },
+        {
+          id: "sekprodi3",
+          name: "Nur Izzatul Maulidah, SP. Msc. Ph.D",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=NI",
+        },
+        {
+          id: "sekprodi4",
+          name: "Padhina Pangestika, SP. MP",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=PP",
+        },
+      ];
+      const chartColors = [
+        "#4F46E5",
+        "#10B981",
+        "#F59E0B",
+        "#EF4444",
+        "#8B5CF6",
+        "#3B82F6",
+        "#06B6D4",
+        "#F97316",
+        "#E11D48",
+        "#14B8A6",
+        "#22C55E",
+      ];
 
-      // --- DOM ELEMENTS & STATE ---
+      // --- DOM ELEMENTS ---
       const loginPage = document.getElementById("login-page");
       const electionPage = document.getElementById("election-page");
       const loginForm = document.getElementById("login-form");
@@ -246,61 +381,49 @@
       const logoutButton = document.getElementById("logout-button");
       const votingSection = document.getElementById("voting-section");
       const resultsSection = document.getElementById("results-section");
-      const candidatesContainer = document.getElementById(
-        "candidates-container"
-      );
-      const resetButton = document.getElementById("reset-button");
-      const voteSuccessMessage = document.getElementById(
-        "vote-success-message"
-      );
-      const alreadyVotedMessage = document.getElementById(
-        "already-voted-message"
-      );
-      const resultsSummary = document.getElementById("results-summary");
       const welcomeMessage = document.getElementById("welcome-message");
-      const voteLogContainer = document.getElementById("vote-log-container");
-      const ctx = document.getElementById("resultsChart").getContext("2d");
 
-      let resultsChart;
-      let unsubscribeFromUpdates = null; // To stop listening to Firestore updates on logout
+      const kaprodiCandidatesContainer = document.getElementById(
+        "kaprodi-candidates-container"
+      );
+      const sekprodiCandidatesContainer = document.getElementById(
+        "sekprodi-candidates-container"
+      );
+      const kaprodiCtx = document
+        .getElementById("kaprodiResultsChart")
+        .getContext("2d");
+      const sekprodiCtx = document
+        .getElementById("sekprodiResultsChart")
+        .getContext("2d");
 
-      // --- DATA FUNCTIONS (Now with Firestore) ---
-      function getInitialElectionData() {
-        const initialVotes = candidates.reduce(
-          (acc, c) => ({ ...acc, [c.id]: 0 }),
-          {}
-        );
-        return {
-          votes: initialVotes,
-          voters: {},
-          log: [],
-        };
-      }
+      let kaprodiResultsChart, sekprodiResultsChart;
+      let unsubKaprodi = null,
+        unsubSekprodi = null;
 
-      async function castVote(candidateId, username) {
-        const electionRef = doc(db, "elections", ELECTION_ID);
+      // --- DATA FUNCTIONS (Firestore) ---
+      const getInitialElectionData = (candidates) => ({
+        votes: candidates.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {}),
+        voters: {},
+        log: [],
+      });
 
+      async function castVote(electionId, candidateId, username, candidates) {
+        const electionRef = doc(db, "elections", electionId);
         try {
           await runTransaction(db, async (transaction) => {
             const electionDoc = await transaction.get(electionRef);
+            const electionData = electionDoc.exists()
+              ? electionDoc.data()
+              : getInitialElectionData(candidates);
 
-            // Initialize document if it doesn't exist
-            let electionData;
-            if (!electionDoc.exists()) {
-              electionData = getInitialElectionData();
-            } else {
-              electionData = electionDoc.data();
-            }
-
-            if (electionData.voters && electionData.voters[username]) {
+            if (electionData.voters && electionData.voters[username])
               throw new Error("User has already voted.");
-            }
 
-            const newVotes = { ...electionData.votes };
-            newVotes[candidateId] = (newVotes[candidateId] || 0) + 1;
-
+            const newVotes = {
+              ...electionData.votes,
+              [candidateId]: (electionData.votes[candidateId] || 0) + 1,
+            };
             const newVoters = { ...electionData.voters, [username]: true };
-
             const candidate = candidates.find((c) => c.id === candidateId);
             const newLogEntry = {
               voter: username,
@@ -311,151 +434,161 @@
               ? [...electionData.log, newLogEntry]
               : [newLogEntry];
 
-            if (!electionDoc.exists()) {
+            if (!electionDoc.exists())
               transaction.set(electionRef, {
                 votes: newVotes,
                 voters: newVoters,
                 log: newLog,
               });
-            } else {
+            else
               transaction.update(electionRef, {
                 votes: newVotes,
                 voters: newVoters,
                 log: newLog,
               });
-            }
           });
-          console.log("Vote cast successfully!");
           return true;
         } catch (e) {
-          console.error("Vote transaction failed: ", e);
+          console.error(`Vote transaction for ${electionId} failed:`, e);
           return false;
         }
       }
 
-      async function checkIfVoted(username) {
-        const electionRef = doc(db, "elections", ELECTION_ID);
-        const electionDoc = await getDoc(electionRef);
-        if (electionDoc.exists()) {
-          const voters = electionDoc.data().voters || {};
-          return voters[username] === true;
-        }
-        return false;
+      async function checkIfVoted(electionId, username) {
+        const electionDoc = await getDoc(doc(db, "elections", electionId));
+        return (
+          electionDoc.exists() && electionDoc.data().voters?.[username] === true
+        );
       }
 
-      function getLoggedInUser() {
-        return sessionStorage.getItem("loggedInUser");
-      }
-
-      function isAdmin() {
-        return sessionStorage.getItem("isAdmin") === "true";
-      }
+      const getLoggedInUser = () => sessionStorage.getItem("loggedInUser");
+      const isAdmin = () => sessionStorage.getItem("isAdmin") === "true";
 
       // --- UI FUNCTIONS ---
-      function renderCandidates() {
-        candidatesContainer.innerHTML = candidates
+      function renderCandidates(container, candidates, electionId, hasVoted) {
+        container.innerHTML = candidates
           .map(
-            (candidate) => `
-                        <div class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 transition-all hover:shadow-md hover:border-indigo-500">
-                            <div class="flex items-center">
-                                <img src="${candidate.photo}" alt="${candidate.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mr-4">
-                                <div><h3 class="text-lg font-semibold">${candidate.name}</h3></div>
-                            </div>
-                            <button data-candidate-id="${candidate.id}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 w-full sm:w-auto sm:flex-shrink-0">Vote</button>
-                        </div>`
+            (c) => `
+                <div class="border border-gray-200 rounded-lg p-4 flex items-center justify-between transition-all hover:shadow-md">
+                    <div class="flex items-center"><img src="${c.photo}" alt="${
+              c.name
+            }" class="w-16 h-16 rounded-full mr-4">
+                        <div><h3 class="text-lg font-semibold">${
+                          c.name
+                        }</h3></div>
+                    </div>
+                    <button data-candidate-id="${
+                      c.id
+                    }" data-election-id="${electionId}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg w-28 text-center">
+                        ${hasVoted ? "Voted" : "Vote"}
+                    </button>
+                </div>`
           )
           .join("");
+        if (hasVoted) {
+          container
+            .querySelectorAll(".vote-btn")
+            .forEach((btn) => (btn.disabled = true));
+        }
       }
 
-      function updateResultsUI(electionData) {
-        const { votes, log } = electionData || getInitialElectionData();
+      function updateResultsUI(
+        chart,
+        summaryEl,
+        logEl,
+        candidates,
+        electionData
+      ) {
+        const { votes, log } =
+          electionData || getInitialElectionData(candidates);
+        summaryEl.innerHTML = `<h3 class="text-xl font-bold mb-4">Total Votes</h3><div class="space-y-2">${candidates
+          .map(
+            (c) =>
+              `<p class="text-lg">${c.name}: <span class="font-bold">${
+                votes[c.id] || 0
+              }</span></p>`
+          )
+          .join("")}</div>`;
+        logEl.innerHTML =
+          log && log.length > 0
+            ? `<ul class="space-y-2">${log
+                .slice()
+                .reverse()
+                .map(
+                  (e) =>
+                    `<li class="text-sm p-2 bg-white rounded shadow-sm">Voted for <b>${
+                      e.candidateName
+                    }</b> at ${new Date(e.timestamp).toLocaleString(
+                      "id-ID"
+                    )}</li>`
+                )
+                .join("")}</ul>`
+            : `<p class="text-gray-500 text-center">No votes cast yet.</p>`;
+        const chartData = candidates.map((c) => votes[c.id] || 0);
 
-        let summaryHtml =
-          '<h3 class="text-xl font-bold mb-4">Total Votes</h3><div class="space-y-2">';
-        const chartData = [];
-
-        candidates.forEach((candidate) => {
-          const voteCount = votes[candidate.id] || 0;
-          chartData.push(voteCount);
-          summaryHtml += `<p class="text-lg">${candidate.name}: <span class="font-bold">${voteCount}</span></p>`;
-        });
-        summaryHtml += "</div>";
-        resultsSummary.innerHTML = summaryHtml;
-
-        if (resultsChart) {
-          resultsChart.data.datasets[0].data = chartData;
-          resultsChart.update();
+        if (chart.instance) {
+          chart.instance.data.datasets[0].data = chartData;
+          chart.instance.update();
         } else {
-          createChart(chartData);
+          chart.instance = new Chart(chart.ctx, {
+            type: "pie",
+            data: {
+              labels: candidates.map((c) => c.name),
+              datasets: [
+                {
+                  label: "Votes",
+                  data: chartData,
+                  backgroundColor: chartColors,
+                  borderColor: "#FFFFFF",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { position: "top" } },
+            },
+          });
         }
-        updateVoteLogUI(log);
-      }
-
-      function updateVoteLogUI(log = []) {
-        if (log.length === 0) {
-          voteLogContainer.innerHTML =
-            '<p class="text-gray-500 text-center">No votes have been cast yet.</p>';
-          return;
-        }
-        voteLogContainer.innerHTML = `<ul class="space-y-2">${log
-          .slice()
-          .reverse()
-          .map((entry) => {
-            const timestamp = new Date(entry.timestamp).toLocaleString(
-              "id-ID",
-              { dateStyle: "medium", timeStyle: "short" }
-            );
-            return `<li class="text-sm p-2 bg-white rounded shadow-sm"></span> voted for <span class="font-semibold">${entry.candidateName}</span> at ${timestamp}</li>`;
-          })
-          .join("")}</ul>`;
-      }
-
-      function createChart(data = []) {
-        if (resultsChart) resultsChart.destroy();
-        resultsChart = new Chart(ctx, {
-          type: "pie",
-          data: {
-            labels: candidates.map((c) => c.name),
-            datasets: [
-              {
-                label: "Votes",
-                data: data,
-                backgroundColor: chartColors,
-                borderColor: "#FFFFFF",
-                borderWidth: 2,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: "top" } },
-          },
-        });
-      }
-
-      function disableVotingUI() {
-        document.querySelectorAll(".vote-btn").forEach((button) => {
-          button.disabled = true;
-          button.textContent = "Voted";
-        });
-        alreadyVotedMessage.classList.remove("hidden");
       }
 
       function setupAdminView() {
         votingSection.classList.add("hidden");
         resultsSection.classList.remove("hidden");
-        welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Review the live election results below.`;
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Review the live results below.`;
 
-        // Listen for real-time updates
-        const electionRef = doc(db, "elections", ELECTION_ID);
-        unsubscribeFromUpdates = onSnapshot(
-          electionRef,
-          (doc) => {
-            updateResultsUI(doc.data());
-          },
-          (error) => {
-            console.error("Error listening to election updates:", error);
-          }
+        const kaprodiElements = {
+          chart: { ctx: kaprodiCtx, instance: kaprodiResultsChart },
+          summaryEl: document.getElementById("kaprodi-results-summary"),
+          logEl: document.getElementById("kaprodi-vote-log-container"),
+        };
+        unsubKaprodi = onSnapshot(
+          doc(db, "elections", KAPRODI_ELECTION_ID),
+          (doc) =>
+            updateResultsUI(
+              kaprodiElements.chart,
+              kaprodiElements.summaryEl,
+              kaprodiElements.logEl,
+              kaprodiCandidates,
+              doc.data()
+            )
+        );
+
+        const sekprodiElements = {
+          chart: { ctx: sekprodiCtx, instance: sekprodiResultsChart },
+          summaryEl: document.getElementById("sekprodi-results-summary"),
+          logEl: document.getElementById("sekprodi-vote-log-container"),
+        };
+        unsubSekprodi = onSnapshot(
+          doc(db, "elections", SEKPRODI_ELECTION_ID),
+          (doc) =>
+            updateResultsUI(
+              sekprodiElements.chart,
+              sekprodiElements.summaryEl,
+              sekprodiElements.logEl,
+              sekprodiCandidates,
+              doc.data()
+            )
         );
       }
 
@@ -463,29 +596,50 @@
         const username = getLoggedInUser();
         resultsSection.classList.add("hidden");
         votingSection.classList.remove("hidden");
-        welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Cast your vote for the next Head of Department.`;
-        renderCandidates();
-        if (await checkIfVoted(username)) {
-          disableVotingUI();
-        }
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Please cast your votes.`;
+
+        const hasVotedKaprodi = await checkIfVoted(
+          KAPRODI_ELECTION_ID,
+          username
+        );
+        renderCandidates(
+          kaprodiCandidatesContainer,
+          kaprodiCandidates,
+          KAPRODI_ELECTION_ID,
+          hasVotedKaprodi
+        );
+        if (hasVotedKaprodi)
+          document
+            .getElementById("kaprodi-already-voted")
+            .classList.remove("hidden");
+
+        const hasVotedSekprodi = await checkIfVoted(
+          SEKPRODI_ELECTION_ID,
+          username
+        );
+        renderCandidates(
+          sekprodiCandidatesContainer,
+          sekprodiCandidates,
+          SEKPRODI_ELECTION_ID,
+          hasVotedSekprodi
+        );
+        if (hasVotedSekprodi)
+          document
+            .getElementById("sekprodi-already-voted")
+            .classList.remove("hidden");
       }
 
+      // --- Main App Logic ---
       function showMainApp() {
         loginPage.classList.add("hidden");
         electionPage.classList.remove("hidden");
-        if (isAdmin()) {
-          setupAdminView();
-        } else {
-          setupVoterView();
-        }
+        isAdmin() ? setupAdminView() : setupVoterView();
       }
 
       function handleLogout() {
         sessionStorage.clear();
-        if (unsubscribeFromUpdates) {
-          unsubscribeFromUpdates(); // Stop listening
-          unsubscribeFromUpdates = null;
-        }
+        if (unsubKaprodi) unsubKaprodi();
+        if (unsubSekprodi) unsubSekprodi();
         electionPage.classList.add("hidden");
         loginPage.classList.remove("hidden");
       }
@@ -494,13 +648,13 @@
       loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
         const user = userDatabase[username];
-
-        if (user && user.password === password) {
+        if (
+          user &&
+          user.password === document.getElementById("password").value
+        ) {
           sessionStorage.setItem("loggedInUser", username);
           sessionStorage.setItem("isAdmin", user.isAdmin);
-          loginError.classList.add("hidden");
           loginForm.reset();
           showMainApp();
         } else {
@@ -510,64 +664,80 @@
 
       logoutButton.addEventListener("click", handleLogout);
 
-      candidatesContainer.addEventListener("click", async (e) => {
-        const username = getLoggedInUser();
-        if (
-          e.target.classList.contains("vote-btn") &&
-          e.target.disabled === false
-        ) {
-          if (isAdmin() || (await checkIfVoted(username))) return;
-
+      votingSection.addEventListener("click", async (e) => {
+        if (e.target.matches(".vote-btn:not(:disabled)")) {
           e.target.disabled = true;
           e.target.textContent = "Submitting...";
-
-          const candidateId = e.target.dataset.candidateId;
-          const success = await castVote(candidateId, username);
+          const { candidateId, electionId } = e.target.dataset;
+          const candidates =
+            electionId === KAPRODI_ELECTION_ID
+              ? kaprodiCandidates
+              : sekprodiCandidates;
+          const success = await castVote(
+            electionId,
+            candidateId,
+            getLoggedInUser(),
+            candidates
+          );
 
           if (success) {
-            voteSuccessMessage.classList.remove("hidden");
-            disableVotingUI();
+            const panelId = electionId.split("-")[0]; // "kaprodi" or "sekprodi"
+            document
+              .getElementById(`${panelId}-vote-success`)
+              .classList.remove("hidden");
+            document
+              .querySelectorAll(`[data-election-id="${electionId}"]`)
+              .forEach((btn) => {
+                btn.disabled = true;
+                btn.textContent = "Voted";
+              });
           } else {
-            alert(
-              "Failed to cast vote. This may be because you have already voted. Please refresh the page."
-            );
+            alert("Failed to cast vote. Please refresh and try again.");
             e.target.disabled = false;
             e.target.textContent = "Vote";
           }
         }
       });
 
-      resetButton.addEventListener("click", async () => {
+      resultsSection.addEventListener("click", async (e) => {
+        const targetId = e.target.id;
         if (
-          confirm(
-            "Are you sure you want to reset all election data? This is irreversible."
-          )
+          targetId === "reset-kaprodi-button" ||
+          targetId === "reset-sekprodi-button"
         ) {
-          try {
-            const electionRef = doc(db, "elections", ELECTION_ID);
-            await setDoc(electionRef, getInitialElectionData());
-            alert("Election data has been reset successfully.");
-          } catch (error) {
-            console.error("Error resetting election: ", error);
-            alert("Failed to reset election data.");
+          const isKaprodi = targetId === "reset-kaprodi-button";
+          const electionName = isKaprodi ? "Kaprodi" : "Sekprodi";
+          const electionId = isKaprodi
+            ? KAPRODI_ELECTION_ID
+            : SEKPRODI_ELECTION_ID;
+          const candidates = isKaprodi ? kaprodiCandidates : sekprodiCandidates;
+
+          if (
+            confirm(
+              `Are you sure you want to reset the ${electionName} election data? This is irreversible.`
+            )
+          ) {
+            try {
+              await setDoc(
+                doc(db, "elections", electionId),
+                getInitialElectionData(candidates)
+              );
+              alert(
+                `${electionName} election data has been reset successfully.`
+              );
+            } catch (error) {
+              alert(`Failed to reset ${electionName} election data.`);
+            }
           }
         }
       });
 
-      // --- INITIALIZATION on page load ---
+      // --- INITIALIZATION ---
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          // User is signed in anonymously.
           console.log("Firebase anonymous auth successful, UID:", user.uid);
-          // Check session storage to decide what to show
-          if (getLoggedInUser()) {
-            showMainApp();
-          } else {
-            electionPage.classList.add("hidden");
-            loginPage.classList.remove("hidden");
-          }
+          if (getLoggedInUser()) showMainApp();
         } else {
-          // User is signed out.
           handleLogout();
           signInAnonymously(auth).catch((error) =>
             console.error("Anonymous sign-in failed", error)
