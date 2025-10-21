@@ -1,380 +1,550 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Head of Department Election</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for the pie chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Custom font */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Style for disabled buttons */
-        .vote-btn:disabled {
-            background-color: #9ca3af; /* gray-400 */
-            cursor: not-allowed;
-        }
+      /* Custom font */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Style for disabled buttons */
+      .vote-btn:disabled {
+        background-color: #9ca3af; /* gray-400 */
+        cursor: not-allowed;
+      }
     </style>
-</head>
-<body class="bg-gray-100 text-gray-800">
-
+  </head>
+  <body class="bg-gray-100 text-gray-800">
     <!-- Login Page (Visible by default) -->
-    <div id="login-page" class="flex items-center justify-center min-h-screen p-4">
-        <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-2">Election Login</h2>
-            <p class="text-center text-gray-600 mb-6">Please sign in to continue.</p>
-            <form id="login-form">
-                <div class="mb-4">
-                    <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                    <input type="text" id="username" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-6">
-                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <input type="password" id="password" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div id="login-error" class="text-red-500 text-xs italic mb-4 hidden">Invalid username or password.</div>
-                <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full">
-                        Sign In
-                    </button>
-                </div>
-            </form>
-        </div>
+    <div
+      id="login-page"
+      class="flex items-center justify-center min-h-screen p-4"
+    >
+      <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-2">
+          Election Login
+        </h2>
+        <p class="text-center text-gray-600 mb-6">
+          Please sign in to continue.
+        </p>
+        <form id="login-form">
+          <div class="mb-4">
+            <label
+              for="username"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Username</label
+            >
+            <input
+              type="text"
+              id="username"
+              class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div class="mb-6">
+            <label
+              for="password"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="password"
+              class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div id="login-error" class="text-red-500 text-xs italic mb-4 hidden">
+            Invalid username or password.
+          </div>
+          <div class="flex items-center justify-between">
+            <button
+              type="submit"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
+            >
+              Sign In
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Election Page (Initially Hidden) -->
     <div id="election-page" class="hidden">
-        <div class="container mx-auto p-4 md:p-8">
-            <!-- Header -->
-            <header class="mb-8 md:mb-12">
-                <div class="relative text-center">
-                    <h1 class="text-3xl md:text-5xl font-bold text-gray-900">Head of Department Election</h1>
-                    <p id="welcome-message" class="text-md md:text-lg text-gray-600 mt-2"></p>
-                    <div class="sm:absolute sm:top-0 sm:right-0 mt-4 sm:mt-0">
-                        <button id="logout-button" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg w-full sm:w-auto">Logout</button>
-                    </div>
-                </div>
-            </header>
+      <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="mb-8 md:mb-12">
+          <div class="relative text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900">
+              Head of Department Election
+            </h1>
+            <p
+              id="welcome-message"
+              class="text-md md:text-lg text-gray-600 mt-2"
+            ></p>
+            <div class="sm:absolute sm:top-0 sm:right-0 mt-4 sm:mt-0">
+              <button
+                id="logout-button"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg w-full sm:w-auto"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </header>
 
-            <main id="main-content">
-                <!-- Voting Section -->
-                <section id="voting-section" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    <h2 class="text-2xl font-bold mb-6 text-center">Cast Your Vote</h2>
-                    <div id="vote-success-message" class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800">
-                        Vote cast successfully! Thank you for participating.
-                    </div>
-                    <div id="already-voted-message" class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800">
-                        You have already cast your vote.
-                    </div>
-                    <div id="candidates-container" class="space-y-4">
-                        <!-- Candidate cards will be dynamically inserted here -->
-                    </div>
-                </section>
+        <main id="main-content">
+          <!-- Voting Section -->
+          <section
+            id="voting-section"
+            class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
+          >
+            <h2 class="text-2xl font-bold mb-6 text-center">Cast Your Vote</h2>
+            <div
+              id="vote-success-message"
+              class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800"
+            >
+              Vote cast successfully! Thank you for participating.
+            </div>
+            <div
+              id="already-voted-message"
+              class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800"
+            >
+              You have already cast your vote.
+            </div>
+            <div id="candidates-container" class="space-y-4">
+              <!-- Candidate cards will be dynamically inserted here -->
+            </div>
+          </section>
 
-                <!-- Results Section (Admin Only) -->
-                <section id="results-section" class="bg-white p-6 md:p-8 rounded-xl shadow-lg hidden">
-                    <h2 class="text-2xl font-bold mb-6 text-center">Live Results</h2>
-                    <div class="w-full max-w-md mx-auto">
-                        <canvas id="resultsChart"></canvas>
-                    </div>
-                    <div id="results-summary" class="mt-6 text-center">
-                        <p>Loading results...</p>
-                    </div>
-                    <div class="mt-6 text-center">
-                        <button id="reset-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
-                            Reset Election Data
-                        </button>
-                    </div>
-                     <!-- Vote Log Section -->
-                    <div class="mt-8">
-                        <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
-                        <div id="vote-log-container" class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border">
-                            <p class="text-gray-500 text-center">No votes have been cast yet.</p>
-                        </div>
-                    </div>
-                </section>
-            </main>
-            
-            <footer class="text-center mt-8 md:mt-12 text-gray-500">
-                <p>&copy; 2025 Department Election Committee. All rights reserved.</p>
-            </footer>
-        </div>
+          <!-- Results Section (Admin Only) -->
+          <section
+            id="results-section"
+            class="bg-white p-6 md:p-8 rounded-xl shadow-lg hidden"
+          >
+            <h2 class="text-2xl font-bold mb-6 text-center">Live Results</h2>
+            <div class="w-full max-w-md mx-auto">
+              <canvas id="resultsChart"></canvas>
+            </div>
+            <div id="results-summary" class="mt-6 text-center">
+              <p>Loading results...</p>
+            </div>
+            <div class="mt-6 text-center">
+              <button
+                id="reset-button"
+                class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+              >
+                Reset Election Data
+              </button>
+            </div>
+            <!-- Vote Log Section -->
+            <div class="mt-8">
+              <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
+              <div
+                id="vote-log-container"
+                class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border"
+              >
+                <p class="text-gray-500 text-center">
+                  No votes have been cast yet.
+                </p>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer class="text-center mt-8 md:mt-12 text-gray-500">
+          <p>&copy; 2025 Department Election Committee. All rights reserved.</p>
+        </footer>
+      </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- USER DATABASE ---
-        const userDatabase = {
-            "admin": { password: "adminpassword", isAdmin: true },
-            "user1": { password: "password1", isAdmin: false },
-            "user2": { password: "password2", isAdmin: false },
-            "user3": { password: "password3", isAdmin: false },
-            "user4": { password: "password4", isAdmin: false },
-            "user5": { password: "password5", isAdmin: false },
-            "user6": { password: "password6", isAdmin: false },
-            "user7": { password: "password7", isAdmin: false },
-            "user8": { password: "password8", isAdmin: false },
-            "user9": { password: "password9", isAdmin: false },
-            "user10": { password: "password10", isAdmin: false },
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "firebase/app";
+      import { getAnalytics } from "firebase/analytics";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyAnmAaXvf3YIwxQtKgIv1NoXQ0bqeglXeI",
+        authDomain: "pemilihan-ketua-jurusan.firebaseapp.com",
+        projectId: "pemilihan-ketua-jurusan",
+        storageBucket: "pemilihan-ketua-jurusan.firebasestorage.app",
+        messagingSenderId: "319783992909",
+        appId: "1:319783992909:web:0051d1113075c7dfb4e604",
+        measurementId: "G-X1C7LS18HL",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+      const ELECTION_ID = "hod-election-2025"; // A unique ID for this election
+
+      // --- USER DATABASE ---
+      const userDatabase = {
+        admin: { password: "adminpassword", isAdmin: true },
+        user1: { password: "password1", isAdmin: false },
+        user2: { password: "password2", isAdmin: false },
+        user3: { password: "password3", isAdmin: false },
+        user4: { password: "password4", isAdmin: false },
+        user5: { password: "password5", isAdmin: false },
+        user6: { password: "password6", isAdmin: false },
+        user7: { password: "password7", isAdmin: false },
+        user8: { password: "password8", isAdmin: false },
+        user9: { password: "password9", isAdmin: false },
+        user10: { password: "password10", isAdmin: false },
+      };
+
+      // --- ELECTION CONFIGURATION ---
+      const candidates = [
+        {
+          id: "candidate1",
+          name: "Dr. Evelyn Reed",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=ER",
+        },
+        {
+          id: "candidate2",
+          name: "Prof. Samuel Carter",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=SC",
+        },
+        {
+          id: "candidate3",
+          name: "Dr. Olivia Chen",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=OC",
+        },
+      ];
+      const chartColors = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444"];
+
+      // --- DOM ELEMENTS & STATE ---
+      const loginPage = document.getElementById("login-page");
+      const electionPage = document.getElementById("election-page");
+      const loginForm = document.getElementById("login-form");
+      const loginError = document.getElementById("login-error");
+      const logoutButton = document.getElementById("logout-button");
+      const votingSection = document.getElementById("voting-section");
+      const resultsSection = document.getElementById("results-section");
+      const candidatesContainer = document.getElementById(
+        "candidates-container"
+      );
+      const resetButton = document.getElementById("reset-button");
+      const voteSuccessMessage = document.getElementById(
+        "vote-success-message"
+      );
+      const alreadyVotedMessage = document.getElementById(
+        "already-voted-message"
+      );
+      const resultsSummary = document.getElementById("results-summary");
+      const welcomeMessage = document.getElementById("welcome-message");
+      const voteLogContainer = document.getElementById("vote-log-container");
+      const ctx = document.getElementById("resultsChart").getContext("2d");
+
+      let resultsChart;
+      let unsubscribeFromUpdates = null; // To stop listening to Firestore updates on logout
+
+      // --- DATA FUNCTIONS (Now with Firestore) ---
+      function getInitialElectionData() {
+        const initialVotes = candidates.reduce(
+          (acc, c) => ({ ...acc, [c.id]: 0 }),
+          {}
+        );
+        return {
+          votes: initialVotes,
+          voters: {},
+          log: [],
         };
+      }
 
-        // --- ELECTION CONFIGURATION ---
-        const candidates = [
-            { id: 'candidate1', name: 'Dr. Evelyn Reed', photo: 'https://placehold.co/100x100/E2E8F0/4A5568?text=ER' },
-            { id: 'candidate2', name: 'Prof. Samuel Carter', photo: 'https://placehold.co/100x100/E2E8F0/4A5568?text=SC' },
-            { id: 'candidate3', name: 'Dr. Olivia Chen', photo: 'https://placehold.co/100x100/E2E8F0/4A5568?text=OC' },
-        ];
-        const chartColors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'];
+      async function castVote(candidateId, username) {
+        const electionRef = doc(db, "elections", ELECTION_ID);
 
-        // --- DOM ELEMENTS & STATE ---
-        const loginPage = document.getElementById('login-page');
-        const electionPage = document.getElementById('election-page');
-        const loginForm = document.getElementById('login-form');
-        const loginError = document.getElementById('login-error');
-        const logoutButton = document.getElementById('logout-button');
-        const votingSection = document.getElementById('voting-section');
-        const resultsSection = document.getElementById('results-section');
-        const candidatesContainer = document.getElementById('candidates-container');
-        const resetButton = document.getElementById('reset-button');
-        const voteSuccessMessage = document.getElementById('vote-success-message');
-        const alreadyVotedMessage = document.getElementById('already-voted-message');
-        const resultsSummary = document.getElementById('results-summary');
-        const welcomeMessage = document.getElementById('welcome-message');
-        const voteLogContainer = document.getElementById('vote-log-container');
-        const ctx = document.getElementById('resultsChart').getContext('2d');
-        
-        let resultsChart;
-        
-        // --- DATA FUNCTIONS ---
-        function getVotes() {
-            const votes = localStorage.getItem('electionVotes');
-            if (votes) {
-                return JSON.parse(votes);
+        try {
+          await runTransaction(db, async (transaction) => {
+            const electionDoc = await transaction.get(electionRef);
+
+            if (!electionDoc.exists()) {
+              await transaction.set(electionRef, getInitialElectionData());
             }
-            const initialVotes = candidates.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {});
-            localStorage.setItem('electionVotes', JSON.stringify(initialVotes));
-            return initialVotes;
-        }
 
-        function saveVotes(votes) {
-            localStorage.setItem('electionVotes', JSON.stringify(votes));
-            window.dispatchEvent(new Event('storage'));
-        }
-        
-        function getLog() {
-            const log = localStorage.getItem('electionLog');
-            return log ? JSON.parse(log) : [];
-        }
+            const electionData = electionDoc.data() || getInitialElectionData();
 
-        function saveLog(log) {
-            localStorage.setItem('electionLog', JSON.stringify(log));
-            window.dispatchEvent(new Event('storage'));
-        }
+            if (electionData.voters[username]) {
+              throw new Error("User has already voted.");
+            }
 
-        function addLogEntry(candidateId, username) {
-            const log = getLog();
-            const candidate = candidates.find(c => c.id === candidateId);
-            const newEntry = {
-                voter: username,
-                candidateName: candidate.name,
-                timestamp: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
+            const newVotes = { ...electionData.votes };
+            newVotes[candidateId] = (newVotes[candidateId] || 0) + 1;
+
+            const newVoters = { ...electionData.voters, [username]: true };
+
+            const candidate = candidates.find((c) => c.id === candidateId);
+            const newLogEntry = {
+              voter: username,
+              candidateName: candidate.name,
+              timestamp: new Date().toISOString(),
             };
-            log.push(newEntry);
-            saveLog(log);
-        }
+            const newLog = electionData.log
+              ? [...electionData.log, newLogEntry]
+              : [newLogEntry];
 
-        function getLoggedInUser() {
-            return sessionStorage.getItem('loggedInUser');
+            transaction.update(electionRef, {
+              votes: newVotes,
+              voters: newVoters,
+              log: newLog,
+            });
+          });
+          console.log("Vote cast successfully!");
+          return true;
+        } catch (e) {
+          console.error("Vote transaction failed: ", e);
+          return false;
         }
+      }
 
-        function isAdmin() {
-            return sessionStorage.getItem('isAdmin') === 'true';
+      async function checkIfVoted(username) {
+        const electionRef = doc(db, "elections", ELECTION_ID);
+        const electionDoc = await getDoc(electionRef);
+        if (electionDoc.exists()) {
+          const voters = electionDoc.data().voters || {};
+          return voters[username] === true;
         }
+        return false;
+      }
 
-        function checkIfVoted(username) {
-            return localStorage.getItem(`voted_${username}`) === 'true';
-        }
+      function getLoggedInUser() {
+        return sessionStorage.getItem("loggedInUser");
+      }
 
-        function markAsVoted(username) {
-            localStorage.setItem(`voted_${username}`, 'true');
-        }
+      function isAdmin() {
+        return sessionStorage.getItem("isAdmin") === "true";
+      }
 
-        // --- UI FUNCTIONS ---
-        function renderCandidates() {
-            let html = '';
-            candidates.forEach(candidate => {
-                html += `<div class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 transition-all hover:shadow-md hover:border-indigo-500">
+      // --- UI FUNCTIONS ---
+      function renderCandidates() {
+        candidatesContainer.innerHTML = candidates
+          .map(
+            (candidate) => `
+                <div class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 transition-all hover:shadow-md hover:border-indigo-500">
                     <div class="flex items-center">
                         <img src="${candidate.photo}" alt="${candidate.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mr-4">
                         <div><h3 class="text-lg font-semibold">${candidate.name}</h3></div>
                     </div>
                     <button data-candidate-id="${candidate.id}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 w-full sm:w-auto sm:flex-shrink-0">Vote</button>
-                </div>`;
-            });
-            candidatesContainer.innerHTML = html;
-        }
-        
-        function updateResults() {
-            const votes = getVotes();
-            let summaryHtml = '<h3 class="text-xl font-bold mb-4">Total Votes</h3><div class="space-y-2">';
-            const chartData = [];
-            
-            candidates.forEach(candidate => {
-                const voteCount = votes[candidate.id] || 0;
-                chartData.push(voteCount);
-                summaryHtml += `<p class="text-lg">${candidate.name}: <span class="font-bold">${voteCount}</span></p>`;
-            });
-            summaryHtml += '</div>';
-            resultsSummary.innerHTML = summaryHtml;
+                </div>`
+          )
+          .join("");
+      }
 
-            if (resultsChart) {
-                resultsChart.data.datasets[0].data = chartData;
-                resultsChart.update();
-            } else {
-                 createChart(chartData);
-            }
-            updateVoteLog();
-        }
-        
-        function updateVoteLog() {
-            const log = getLog();
-            if (log.length === 0) {
-                voteLogContainer.innerHTML = '<p class="text-gray-500 text-center">No votes have been cast yet.</p>';
-                return;
-            }
+      function updateResultsUI(electionData) {
+        const { votes, log } = electionData || getInitialElectionData();
 
-            let logHtml = '<ul class="space-y-2">';
-            log.slice().reverse().forEach(entry => {
-                logHtml += `<li class="text-sm p-2 bg-white rounded shadow-sm">User <span class="font-semibold">${entry.voter}</span> voted for <span class="font-semibold">${entry.candidateName}</span> at ${entry.timestamp}</li>`;
-            });
-            logHtml += '</ul>';
-            voteLogContainer.innerHTML = logHtml;
-        }
+        let summaryHtml =
+          '<h3 class="text-xl font-bold mb-4">Total Votes</h3><div class="space-y-2">';
+        const chartData = [];
 
-        function createChart(data = []) {
-            if (resultsChart) resultsChart.destroy();
-            resultsChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: candidates.map(c => c.name),
-                    datasets: [{ label: 'Votes', data: data, backgroundColor: chartColors, borderColor: '#FFFFFF', borderWidth: 2 }]
-                },
-                options: { responsive: true, plugins: { legend: { position: 'top' } } }
-            });
-        }
-
-        function disableVotingUI() {
-            document.querySelectorAll('.vote-btn').forEach(button => {
-                button.disabled = true;
-                button.textContent = 'Voted';
-            });
-            alreadyVotedMessage.classList.remove('hidden');
-        }
-        
-        function setupAdminView() {
-            votingSection.classList.add('hidden');
-            resultsSection.classList.remove('hidden');
-            welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Review the live election results below.`;
-            updateResults();
-        }
-
-        function setupVoterView() {
-            const username = getLoggedInUser();
-            resultsSection.classList.add('hidden');
-            votingSection.classList.remove('hidden');
-            welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Cast your vote for the next Head of Department.`;
-            renderCandidates();
-            if (checkIfVoted(username)) {
-                disableVotingUI();
-            }
-        }
-        
-        function showMainApp() {
-            loginPage.classList.add('hidden');
-            electionPage.classList.remove('hidden');
-            if(isAdmin()){
-                setupAdminView();
-            } else {
-                setupVoterView();
-            }
-        }
-
-        // --- EVENT LISTENERS ---
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const user = userDatabase[username];
-
-            if (user && user.password === password) {
-                sessionStorage.setItem('loggedInUser', username);
-                sessionStorage.setItem('isAdmin', user.isAdmin);
-                loginError.classList.add('hidden');
-                loginForm.reset();
-                showMainApp();
-            } else {
-                loginError.classList.remove('hidden');
-            }
+        candidates.forEach((candidate) => {
+          const voteCount = votes[candidate.id] || 0;
+          chartData.push(voteCount);
+          summaryHtml += `<p class="text-lg">${candidate.name}: <span class="font-bold">${voteCount}</span></p>`;
         });
+        summaryHtml += "</div>";
+        resultsSummary.innerHTML = summaryHtml;
 
-        logoutButton.addEventListener('click', () => {
-            sessionStorage.clear();
-            electionPage.classList.add('hidden');
-            loginPage.classList.remove('hidden');
-        });
-
-        candidatesContainer.addEventListener('click', (e) => {
-            const username = getLoggedInUser();
-            if (e.target.classList.contains('vote-btn')) {
-                if (isAdmin() || checkIfVoted(username)) return;
-
-                const candidateId = e.target.dataset.candidateId;
-                const votes = getVotes();
-                votes[candidateId]++;
-                saveVotes(votes);
-                markAsVoted(username);
-                addLogEntry(candidateId, username);
-                
-                voteSuccessMessage.classList.remove('hidden');
-                disableVotingUI();
-            }
-        });
-
-        resetButton.addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset all election data? This is irreversible and will allow all users to vote again.')) {
-                const initialVotes = candidates.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {});
-                saveVotes(initialVotes);
-                localStorage.removeItem('electionLog');
-                
-                Object.keys(userDatabase).forEach(username => {
-                    localStorage.removeItem(`voted_${username}`);
-                });
-
-                alert('Election data has been reset successfully.');
-                updateResults();
-            }
-        });
-        
-        window.addEventListener('storage', (e) => {
-            if (isAdmin()) {
-                updateResults();
-            }
-        });
-
-        // --- INITIALIZATION on page load ---
-        if (getLoggedInUser()) {
-           showMainApp();
+        if (resultsChart) {
+          resultsChart.data.datasets[0].data = chartData;
+          resultsChart.update();
         } else {
-            electionPage.classList.add('hidden');
-            loginPage.classList.remove('hidden');
+          createChart(chartData);
         }
-    });
-    </script>
-</body>
-</html>
+        updateVoteLogUI(log);
+      }
 
+      function updateVoteLogUI(log = []) {
+        if (log.length === 0) {
+          voteLogContainer.innerHTML =
+            '<p class="text-gray-500 text-center">No votes have been cast yet.</p>';
+          return;
+        }
+        voteLogContainer.innerHTML = `<ul class="space-y-2">${log
+          .slice()
+          .reverse()
+          .map((entry) => {
+            const timestamp = new Date(entry.timestamp).toLocaleString(
+              "id-ID",
+              { dateStyle: "medium", timeStyle: "short" }
+            );
+            return `<li class="text-sm p-2 bg-white rounded shadow-sm">User <span class="font-semibold">${entry.voter}</span> voted for <span class="font-semibold">${entry.candidateName}</span> at ${timestamp}</li>`;
+          })
+          .join("")}</ul>`;
+      }
+
+      function createChart(data = []) {
+        if (resultsChart) resultsChart.destroy();
+        resultsChart = new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: candidates.map((c) => c.name),
+            datasets: [
+              {
+                label: "Votes",
+                data: data,
+                backgroundColor: chartColors,
+                borderColor: "#FFFFFF",
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: "top" } },
+          },
+        });
+      }
+
+      function disableVotingUI() {
+        document.querySelectorAll(".vote-btn").forEach((button) => {
+          button.disabled = true;
+          button.textContent = "Voted";
+        });
+        alreadyVotedMessage.classList.remove("hidden");
+      }
+
+      function setupAdminView() {
+        votingSection.classList.add("hidden");
+        resultsSection.classList.remove("hidden");
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Review the live election results below.`;
+
+        // Listen for real-time updates
+        const electionRef = doc(db, "elections", ELECTION_ID);
+        unsubscribeFromUpdates = onSnapshot(electionRef, (doc) => {
+          updateResultsUI(doc.data());
+        });
+      }
+
+      async function setupVoterView() {
+        const username = getLoggedInUser();
+        resultsSection.classList.add("hidden");
+        votingSection.classList.remove("hidden");
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Cast your vote for the next Head of Department.`;
+        renderCandidates();
+        if (await checkIfVoted(username)) {
+          disableVotingUI();
+        }
+      }
+
+      function showMainApp() {
+        loginPage.classList.add("hidden");
+        electionPage.classList.remove("hidden");
+        if (isAdmin()) {
+          setupAdminView();
+        } else {
+          setupVoterView();
+        }
+      }
+
+      function handleLogout() {
+        sessionStorage.clear();
+        if (unsubscribeFromUpdates) {
+          unsubscribeFromUpdates(); // Stop listening
+          unsubscribeFromUpdates = null;
+        }
+        electionPage.classList.add("hidden");
+        loginPage.classList.remove("hidden");
+      }
+
+      // --- EVENT LISTENERS ---
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const user = userDatabase[username];
+
+        if (user && user.password === password) {
+          sessionStorage.setItem("loggedInUser", username);
+          sessionStorage.setItem("isAdmin", user.isAdmin);
+          loginError.classList.add("hidden");
+          loginForm.reset();
+          showMainApp();
+        } else {
+          loginError.classList.remove("hidden");
+        }
+      });
+
+      logoutButton.addEventListener("click", handleLogout);
+
+      candidatesContainer.addEventListener("click", async (e) => {
+        const username = getLoggedInUser();
+        if (
+          e.target.classList.contains("vote-btn") &&
+          e.target.disabled === false
+        ) {
+          if (isAdmin() || (await checkIfVoted(username))) return;
+
+          e.target.disabled = true;
+          e.target.textContent = "Submitting...";
+
+          const candidateId = e.target.dataset.candidateId;
+          const success = await castVote(candidateId, username);
+
+          if (success) {
+            voteSuccessMessage.classList.remove("hidden");
+            disableVotingUI();
+          } else {
+            alert("Failed to cast vote. Please try again.");
+            e.target.disabled = false;
+            e.target.textContent = "Vote";
+          }
+        }
+      });
+
+      resetButton.addEventListener("click", async () => {
+        if (
+          confirm(
+            "Are you sure you want to reset all election data? This is irreversible."
+          )
+        ) {
+          try {
+            const electionRef = doc(db, "elections", ELECTION_ID);
+            await setDoc(electionRef, getInitialElectionData());
+            alert("Election data has been reset successfully.");
+          } catch (error) {
+            console.error("Error resetting election: ", error);
+            alert("Failed to reset election data.");
+          }
+        }
+      });
+
+      // --- INITIALIZATION on page load ---
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in anonymously.
+          console.log("Firebase anonymous auth successful, UID:", user.uid);
+          // Check session storage to decide what to show
+          if (getLoggedInUser()) {
+            showMainApp();
+          } else {
+            electionPage.classList.add("hidden");
+            loginPage.classList.remove("hidden");
+          }
+        } else {
+          // User is signed out.
+          handleLogout();
+          signInAnonymously(auth).catch((error) =>
+            console.error("Anonymous sign-in failed", error)
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
