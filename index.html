@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Head of Department Election</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for the pie chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for disabled buttons */
+        .vote-btn:disabled {
+            background-color: #9ca3af; /* gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Admin Login Modal (Initially Hidden) -->
+    <div id="admin-login-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">Admin Login</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                    <input type="text" id="username" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="password" class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div id="login-error" class="text-red-500 text-xs italic mb-4 hidden">Invalid username or password.</div>
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                     <button type="button" id="cancel-login-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Election Page -->
+    <div id="election-page">
+        <div class="container mx-auto p-4 md:p-8">
+            <!-- Header -->
+            <header class="mb-8 md:mb-12">
+                <div class="relative text-center">
+                    <h1 class="text-3xl md:text-5xl font-bold text-gray-900">Head of Department Election</h1>
+                    <p id="welcome-message" class="text-md md:text-lg text-gray-600 mt-2">Cast your vote for the next Head of Department.</p>
+                    <div class="sm:absolute sm:top-0 sm:right-0 mt-4 sm:mt-0">
+                        <button id="admin-login-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg w-full sm:w-auto">Admin Login</button>
+                        <button id="logout-button" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg w-full sm:w-auto">Logout</button>
+                    </div>
+                </div>
+            </header>
+
+            <main id="main-content" class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                <!-- Voting Section -->
+                <section id="voting-section" class="bg-white p-6 md:p-8 rounded-xl shadow-lg lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-6 text-center">Cast Your Vote</h2>
+                    <div id="vote-success-message" class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800">
+                        Vote cast successfully! Thank you for participating.
+                    </div>
+                    <div id="already-voted-message" class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800">
+                        You have already cast your vote from this browser.
+                    </div>
+                    <div id="candidates-container" class="space-y-4">
+                        <!-- Candidate cards will be dynamically inserted here -->
+                    </div>
+                </section>
+
+                <!-- Results Section (Admin Only) -->
+                <section id="results-section" class="bg-white p-6 md:p-8 rounded-xl shadow-lg hidden">
+                    <h2 class="text-2xl font-bold mb-6 text-center">Live Results</h2>
+                    <div class="w-full max-w-md mx-auto">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                    <div id="results-summary" class="mt-6 text-center">
+                        <p>Loading results...</p>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="reset-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+                            Reset Election Data
+                        </button>
+                    </div>
+                     <!-- Vote Log Section -->
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
+                        <div id="vote-log-container" class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border">
+                            <p class="text-gray-500 text-center">No votes have been cast yet.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <footer class="text-center mt-8 md:mt-12 text-gray-500">
+                <p>&copy; 2025 Department Election Committee. All rights reserved.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- USER DATABASE (ADMIN ONLY) ---
+        const userDatabase = {
+            "admin": { password: "adminpassword", isAdmin: true },
+        };
+
+        // --- ELECTION CONFIGURATION ---
+        const candidates = [
+            { id: 'candidate1', name: 'Dr. Evelyn Reed', photo: 'https://placehold.co/100x100/E2E8F0/4A5568?text=ER' },
+            { id: 'candidate2', name: 'Prof. Samuel Carter', photo: 'https://placehold.co/100x100/E2E8F0/4A5568?text=SC' },
+            { id: 'candidate3', name: 'Dr. Olivia Chen', photo: 'https://placehold.co/100x100/E2E8F0/4A5568?text=OC' },
+        ];
+        const chartColors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'];
+
+        // --- DOM ELEMENTS & STATE ---
+        const adminLoginModal = document.getElementById('admin-login-modal');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const cancelLoginBtn = document.getElementById('cancel-login-btn');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const logoutButton = document.getElementById('logout-button');
+        const votingSection = document.getElementById('voting-section');
+        const resultsSection = document.getElementById('results-section');
+        const candidatesContainer = document.getElementById('candidates-container');
+        const resetButton = document.getElementById('reset-button');
+        const voteSuccessMessage = document.getElementById('vote-success-message');
+        const alreadyVotedMessage = document.getElementById('already-voted-message');
+        const resultsSummary = document.getElementById('results-summary');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const voteLogContainer = document.getElementById('vote-log-container');
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        
+        let resultsChart;
+        let isAdminLoggedIn = false;
+
+        // --- DATA FUNCTIONS ---
+        function getElectionId() {
+            let electionId = localStorage.getItem('electionId');
+            if (!electionId) {
+                electionId = `eid_${Date.now()}`;
+                localStorage.setItem('electionId', electionId);
+            }
+            return electionId;
+        }
+
+        function getVotes() {
+            const votes = localStorage.getItem('electionVotes');
+            if (votes) {
+                return JSON.parse(votes);
+            }
+            const initialVotes = candidates.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {});
+            localStorage.setItem('electionVotes', JSON.stringify(initialVotes));
+            return initialVotes;
+        }
+
+        function saveVotes(votes) {
+            localStorage.setItem('electionVotes', JSON.stringify(votes));
+        }
+        
+        function getLog() {
+            const log = localStorage.getItem('electionLog');
+            return log ? JSON.parse(log) : [];
+        }
+
+        function saveLog(log) {
+            localStorage.setItem('electionLog', JSON.stringify(log));
+        }
+
+        function addLogEntry(candidateId) {
+            const log = getLog();
+            const candidate = candidates.find(c => c.id === candidateId);
+            const newEntry = {
+                candidateName: candidate.name,
+                timestamp: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
+            };
+            log.push(newEntry);
+            saveLog(log);
+        }
+
+        function checkIfVoted() {
+            const electionId = getElectionId();
+            return localStorage.getItem(`voted_${electionId}`) === 'true';
+        }
+
+        function markAsVoted() {
+            const electionId = getElectionId();
+            localStorage.setItem(`voted_${electionId}`, 'true');
+        }
+
+        // --- UI FUNCTIONS ---
+        function renderCandidates() {
+            let html = '';
+            candidates.forEach(candidate => {
+                html += `<div class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 transition-all hover:shadow-md hover:border-indigo-500">
+                    <div class="flex items-center">
+                        <img src="${candidate.photo}" alt="${candidate.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mr-4">
+                        <div><h3 class="text-lg font-semibold">${candidate.name}</h3></div>
+                    </div>
+                    <button data-candidate-id="${candidate.id}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 w-full sm:w-auto sm:flex-shrink-0">Vote</button>
+                </div>`;
+            });
+            candidatesContainer.innerHTML = html;
+        }
+        
+        function updateResults() {
+            const votes = getVotes();
+            let summaryHtml = '<h3 class="text-xl font-bold mb-4">Total Votes</h3><div class="space-y-2">';
+            const chartData = [];
+            
+            candidates.forEach(candidate => {
+                const voteCount = votes[candidate.id] || 0;
+                chartData.push(voteCount);
+                summaryHtml += `<p class="text-lg">${candidate.name}: <span class="font-bold">${voteCount}</span></p>`;
+            });
+            summaryHtml += '</div>';
+            resultsSummary.innerHTML = summaryHtml;
+
+            if (resultsChart) {
+                resultsChart.data.datasets[0].data = chartData;
+                resultsChart.update();
+            } else {
+                 createChart(chartData);
+            }
+            updateVoteLog();
+        }
+        
+        function updateVoteLog() {
+            const log = getLog();
+            if (log.length === 0) {
+                voteLogContainer.innerHTML = '<p class="text-gray-500 text-center">No votes have been cast yet.</p>';
+                return;
+            }
+
+            let logHtml = '<ul class="space-y-2">';
+            log.slice().reverse().forEach(entry => {
+                logHtml += `<li class="text-sm p-2 bg-white rounded shadow-sm">Vote for <span class="font-semibold">${entry.candidateName}</span> at ${entry.timestamp}</li>`;
+            });
+            logHtml += '</ul>';
+            voteLogContainer.innerHTML = logHtml;
+        }
+
+        function createChart(data = []) {
+            if (resultsChart) resultsChart.destroy();
+            resultsChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: candidates.map(c => c.name),
+                    datasets: [{ label: 'Votes', data: data, backgroundColor: chartColors, borderColor: '#FFFFFF', borderWidth: 2 }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+            });
+        }
+
+        function disableVotingUI(isAdmin = false) {
+            document.querySelectorAll('.vote-btn').forEach(button => {
+                button.disabled = true;
+                if(isAdmin){
+                   button.textContent = 'Admin View';
+                } else {
+                   button.textContent = 'Voted';
+                   alreadyVotedMessage.classList.remove('hidden');
+                }
+            });
+        }
+        
+        function setupAdminView() {
+            isAdminLoggedIn = true;
+            adminLoginModal.classList.add('hidden');
+            
+            // Hide voting section and show results section for admin
+            votingSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            resultsSection.classList.add('lg:col-span-2'); // Make results full-width on large screens
+
+            adminLoginBtn.classList.add('hidden');
+            logoutButton.classList.remove('hidden');
+            welcomeMessage.innerHTML = 'Welcome, <span class="font-bold">Admin</span>! Review the live election results below.';
+            updateResults();
+        }
+
+        function setupVoterView() {
+            isAdminLoggedIn = false;
+            
+            // Hide results section and show voting section for voters
+            resultsSection.classList.add('hidden');
+            resultsSection.classList.remove('lg:col-span-2');
+            votingSection.classList.remove('hidden');
+            votingSection.classList.add('lg:col-span-2');
+
+            adminLoginBtn.classList.remove('hidden');
+            logoutButton.classList.add('hidden');
+            welcomeMessage.textContent = 'Cast your vote for the next Head of Department.';
+
+            renderCandidates();
+            if (checkIfVoted()) {
+                disableVotingUI();
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        adminLoginBtn.addEventListener('click', () => {
+            adminLoginModal.classList.remove('hidden');
+        });
+
+        cancelLoginBtn.addEventListener('click', () => {
+            adminLoginModal.classList.add('hidden');
+            loginForm.reset();
+            loginError.classList.add('hidden');
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const user = userDatabase[username];
+
+            if (user && user.password === password) {
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                loginError.classList.add('hidden');
+                loginForm.reset();
+                setupAdminView();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        logoutButton.addEventListener('click', () => {
+            sessionStorage.removeItem('isAdminLoggedIn');
+            setupVoterView();
+        });
+
+        candidatesContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('vote-btn')) {
+                if (isAdminLoggedIn || checkIfVoted()) return;
+
+                const candidateId = e.target.dataset.candidateId;
+                const votes = getVotes();
+                votes[candidateId]++;
+                saveVotes(votes);
+                markAsVoted();
+                addLogEntry(candidateId);
+                
+                voteSuccessMessage.classList.remove('hidden');
+                disableVotingUI();
+            }
+        });
+
+        resetButton.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all election data? This is irreversible and will allow all browsers to vote again.')) {
+                // Reset votes and log
+                const initialVotes = candidates.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {});
+                saveVotes(initialVotes);
+                localStorage.removeItem('electionLog');
+                
+                // Start a new election instance
+                const newElectionId = `eid_${Date.now()}`;
+                localStorage.setItem('electionId', newElectionId);
+
+                alert('Election data has been reset successfully. A new voting session has started.');
+                
+                updateResults();
+            }
+        });
+        
+        window.addEventListener('storage', (e) => {
+            if ((e.key === 'electionVotes' || e.key === 'electionLog') && isAdminLoggedIn) {
+                updateResults();
+            }
+        });
+
+        // --- INITIALIZATION on page load ---
+        if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
+            setupAdminView();
+        } else {
+            setupVoterView();
+        }
+        getVotes(); // Ensures votes object is initialized on first load
+    });
+    </script>
+</body>
+</html>
+
