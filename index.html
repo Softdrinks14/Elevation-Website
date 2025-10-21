@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Head of Department Election</title>
+    <title>Website Pemilihan Kaprodi dan Sekprodi</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for the pie chart -->
@@ -83,7 +83,7 @@
         <header class="mb-8 md:mb-12">
           <div class="relative text-center">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900">
-              Department Election
+              Pemilihan Kaprodi dan Sekprodi 2025
             </h1>
             <p
               id="welcome-message"
@@ -213,7 +213,7 @@
         </main>
 
         <footer class="text-center mt-8 md:mt-12 text-gray-500">
-          <p>&copy; 2025 Department Election Committee. All rights reserved.</p>
+          <p>&copy; 2025 Prodi Agroteknologi. All rights reserved.</p>
         </footer>
       </div>
     </div>
@@ -501,7 +501,7 @@
       ) {
         const { votes, log } =
           electionData || getInitialElectionData(candidates);
-        summaryEl.innerHTML = `<h3 class="text-xl font-bold mb-4">Total Votes</h3><div class="space-y-2">${candidates
+        summaryEl.innerHTML = `<h3 class="text-xl font-bold mb-4">Total Suara</h3><div class="space-y-2">${candidates
           .map(
             (c) =>
               `<p class="text-lg">${c.name}: <span class="font-bold">${
@@ -523,7 +523,7 @@
                     )}</li>`
                 )
                 .join("")}</ul>`
-            : `<p class="text-gray-500 text-center">No votes cast yet.</p>`;
+            : `<p class="text-gray-500 text-center">Tidak ada suara yang masuk.</p>`;
         const chartData = candidates.map((c) => votes[c.id] || 0);
 
         if (chart.instance) {
@@ -555,7 +555,7 @@
       function setupAdminView() {
         votingSection.classList.add("hidden");
         resultsSection.classList.remove("hidden");
-        welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Review the live results below.`;
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Hasil Pemilihan Suara.`;
 
         const kaprodiElements = {
           chart: { ctx: kaprodiCtx, instance: kaprodiResultsChart },
@@ -596,7 +596,7 @@
         const username = getLoggedInUser();
         resultsSection.classList.add("hidden");
         votingSection.classList.remove("hidden");
-        welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Please cast your votes.`;
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Silakan berikan suara Anda.`;
 
         const hasVotedKaprodi = await checkIfVoted(
           KAPRODI_ELECTION_ID,
