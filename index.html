@@ -188,10 +188,6 @@
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
-      const db = getFirestore(app);
-      const auth = getAuth(app);
-      const ELECTION_ID = "hod-election-2025"; // A unique ID for this election
-
       // --- USER DATABASE ---
       const userDatabase = {
         admin: { password: "adminpassword", isAdmin: true },
