@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website Pemilihan Kaprodi & Sekprodi</title>
+    <!-- Title updated -->
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for the pie chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      /* Custom font */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Style for disabled buttons */
+      .vote-btn:disabled,
+      .submit-btn:disabled {
+        background-color: #9ca3af; /* gray-400 */
+        cursor: not-allowed;
+      }
+      .kaprodi-checkbox:disabled {
+        /* Removed .kahima-checkbox */
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+    <!-- Login Page (Visible by default) -->
+    <div
+      id="login-page"
+      class="flex items-center justify-center min-h-screen p-4"
+    >
+      <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-2">
+          Login Website Pemilihan
+        </h2>
+        <p class="text-center text-gray-600 mb-6">
+          Please sign in to continue.
+        </p>
+        <form id="login-form">
+          <div class="mb-4">
+            <label
+              for="username"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Username</label
+            >
+            <input
+              type="text"
+              id="username"
+              class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div class="mb-6">
+            <label
+              for="password"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="password"
+              class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div id="login-error" class="text-red-500 text-xs italic mb-4 hidden">
+            Invalid username or password.
+          </div>
+          <div class="flex items-center justify-between">
+            <button
+              type="submit"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full"
+            >
+              Sign In
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Election Page (Initially Hidden) -->
+    <div id="election-page" class="hidden">
+      <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="mb-8 md:mb-12">
+          <div class="relative text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900">
+              Pemilihan Kaprodi & Sekprodi Agroteknologi 2025
+              <!-- Title updated -->
+            </h1>
+            <p
+              id="welcome-message"
+              class="text-md md:text-lg text-gray-600 mt-2"
+            ></p>
+            <div class="sm:absolute sm:top-0 sm:right-0 mt-4 sm:mt-0">
+              <button
+                id="logout-button"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg w-full sm:w-auto"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <main id="main-content">
+          <!-- Voting Section -->
+          <section id="voting-section">
+            <!-- Grid back to 2 columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <!-- Kaprodi Voting -->
+              <div
+                id="kaprodi-vote-panel"
+                class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
+              >
+                <h2 class="text-2xl font-bold mb-2 text-center">
+                  Vote for Kaprodi
+                </h2>
+                <p class="text-center text-gray-600 mb-4">
+                  Silahkan Memilih 2 Kandidat Kaprodi
+                </p>
+                <div
+                  id="kaprodi-vote-success"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800"
+                >
+                  Vote submitted!
+                </div>
+                <div
+                  id="kaprodi-already-voted"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800"
+                >
+                  Kamu Telah Memilih 2 Calon Kaprodi
+                </div>
+                <div id="kaprodi-candidates-container" class="space-y-4"></div>
+                <button
+                  id="submit-kaprodi-vote-btn"
+                  class="submit-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg w-full mt-6"
+                >
+                  Submit Kaprodi Votes
+                </button>
+              </div>
+              <!-- Sekprodi Voting -->
+              <div
+                id="sekprodi-vote-panel"
+                class="bg-white p-6 md:p-8 rounded-xl shadow-lg"
+              >
+                <h2 class="text-2xl font-bold mb-2 text-center">
+                  Vote for Sekprodi
+                </h2>
+                <p class="text-center text-gray-600 mb-4">
+                  Silahkan Memilih 1 Calon Sekprodi
+                </p>
+                <div
+                  id="sekprodi-vote-success"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-green-100 text-green-800"
+                >
+                  Vote submitted!
+                </div>
+                <div
+                  id="sekprodi-already-voted"
+                  class="hidden text-center mb-4 p-3 rounded-lg bg-blue-100 text-blue-800"
+                >
+                  Kamu Telah Memilih Calon Sekprodi
+                </div>
+                <div id="sekprodi-candidates-container" class="space-y-4"></div>
+              </div>
+              <!-- Kahima Voting Panel Removed -->
+            </div>
+          </section>
+
+          <!-- Results Section (Admin Only) -->
+          <section id="results-section" class="hidden">
+            <!-- Grid back to 2 columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <!-- Kaprodi Results -->
+              <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                  Kaprodi Live Results
+                </h2>
+                <div class="w-full max-w-md mx-auto">
+                  <canvas id="kaprodiResultsChart"></canvas>
+                </div>
+                <div id="kaprodi-results-summary" class="mt-6 text-center">
+                  <p>Loading results...</p>
+                </div>
+                <div class="mt-8">
+                  <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
+                  <div
+                    id="kaprodi-vote-log-container"
+                    class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border"
+                  ></div>
+                </div>
+                <div class="mt-6 text-center">
+                  <button
+                    id="reset-kaprodi-button"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full sm:w-auto"
+                  >
+                    Reset Kaprodi Data
+                  </button>
+                </div>
+              </div>
+              <!-- Sekprodi Results -->
+              <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                  Sekprodi Live Results
+                </h2>
+                <div class="w-full max-w-md mx-auto">
+                  <canvas id="sekprodiResultsChart"></canvas>
+                </div>
+                <div id="sekprodi-results-summary" class="mt-6 text-center">
+                  <p>Loading results...</p>
+                </div>
+                <div class="mt-8">
+                  <h3 class="text-xl font-bold mb-4 text-center">Vote Log</h3>
+                  <div
+                    id="sekprodi-vote-log-container"
+                    class="bg-gray-50 p-4 rounded-lg h-64 overflow-y-auto border"
+                  ></div>
+                </div>
+                <div class="mt-6 text-center">
+                  <button
+                    id="reset-sekprodi-button"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full sm:w-auto"
+                  >
+                    Reset Sekprodi Data
+                  </button>
+                </div>
+              </div>
+              <!-- Kahima Results Panel Removed -->
+            </div>
+          </section>
+        </main>
+
+        <footer class="text-center mt-8 md:mt-12 text-gray-500">
+          <p>&copy; 2025 Prodi Agroteknologi. All rights reserved.</p>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        onSnapshot,
+        runTransaction,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+      // --- PENTING: Konfigurasi Firebase ---
+      // GANTI BAGIAN DI BAWAH INI DENGAN KONFIGURASI PROYEK FIREBASE ANDA.
+      const firebaseConfig = {
+        apiKey: "AIzaSyAnmAaXvf3YIwxQtKgIv1NoXQ0bqeglXeI",
+        authDomain: "pemilihan-ketua-jurusan.firebaseapp.com",
+        projectId: "pemilihan-ketua-jurusan",
+        storageBucket: "pemilihan-ketua-jurusan.firebasestorage.app",
+        messagingSenderId: "319783992909",
+        appId: "1:319783992909:web:0051d1113075c7dfb4e604",
+        measurementId: "G-X1C7LS18HL",
+      };
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      // --- Firestore Collection Name ---
+      const ELECTION_COLLECTION = "electionsV2"; // Changed collection name
+
+      // --- ELECTION IDs (Document IDs within the collection) ---
+      const KAPRODI_ELECTION_ID = "kaprodi-election-2025";
+      const SEKPRODI_ELECTION_ID = "sekprodi-election-2025";
+
+      // --- USER DATABASE ---
+      const userDatabase = {
+        admin: { password: "adminpassword", isAdmin: true },
+        agus: { password: "agus", isAdmin: false },
+        ali: { password: "ali", isAdmin: false },
+        aniek: { password: "aniek", isAdmin: false },
+        aulia: { password: "aulia", isAdmin: false },
+        dian: { password: "dian", isAdmin: false },
+        dyah: { password: "dyah", isAdmin: false },
+        erfan: { password: "erfan", isAdmin: false },
+        erny: { password: "erny", isAdmin: false },
+        fatimah: { password: "fatimah", isAdmin: false },
+        henik: { password: "henik", isAdmin: false },
+        ilmam: { password: "ilmam", isAdmin: false },
+        machmudi: { password: "machmudi", isAdmin: false },
+        muhidin: { password: "muhidin", isAdmin: false },
+        izza: { password: "izza", isAdmin: false },
+        padhina: { password: "padhina", isAdmin: false },
+        sri: { password: "sri", isAdmin: false },
+        syarif: { password: "syarif", isAdmin: false },
+        untung: { password: "untung", isAdmin: false },
+        wahono: { password: "wahono", isAdmin: false },
+      };
+
+      // --- CANDIDATE CONFIGURATION ---
+      const kaprodiCandidates = [
+        {
+          id: "kaprodi1",
+          name: "Agus Zainudin, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=AZ",
+        },
+        {
+          id: "kaprodi2",
+          name: "Aulia Zakia, SP. MSi",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=AZ",
+        },
+        {
+          id: "kaprodi3",
+          name: "Dian Indratmi, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=DI",
+        },
+        {
+          id: "kaprodi4",
+          name: "Erny Ishartati, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=EI",
+        },
+        {
+          id: "kaprodi5",
+          name: "Fatimah Nursandi, Dr. Ir. M.Si.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=FN",
+        },
+        {
+          id: "kaprodi6",
+          name: "Ilmam Zul Fahmi, SP. M.Sc",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=IZ",
+        },
+        {
+          id: "kaprodi7",
+          name: "Nur Izzatul Maulidah, SP. Msc. Ph.D",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=NI",
+        },
+        {
+          id: "kaprodi8",
+          name: "Padhina Pangestika, SP. MP",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=PP",
+        },
+        {
+          id: "kaprodi9",
+          name: "Sri Mursiani Arifah, Dr. Ir. M.P.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=SM",
+        },
+        {
+          id: "kaprodi10",
+          name: "Untung Santoso, Dr. Drs. M.Si.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=US",
+        },
+        {
+          id: "kaprodi11",
+          name: "Wahono, Dr. Ir. M.T.",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=WA",
+        },
+      ];
+      const sekprodiCandidates = [
+        {
+          id: "sekprodi1",
+          name: "Aulia Zakia, SP. MSi",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=AZ",
+        },
+        {
+          id: "sekprodi2",
+          name: "Ilmam Zul Fahmi, SP. M.Sc",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=IZ",
+        },
+        {
+          id: "sekprodi3",
+          name: "Nur Izzatul Maulidah, SP. Msc. Ph.D",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=NI",
+        },
+        {
+          id: "sekprodi4",
+          name: "Padhina Pangestika, SP. MP",
+          photo: "https://placehold.co/100x100/E2E8F0/4A5568?text=PP",
+        },
+      ];
+      const chartColors = [
+        "#4F46E5",
+        "#10B981",
+        "#F59E0B",
+        "#EF4444",
+        "#8B5CF6",
+        "#3B82F6",
+        "#06B6D4",
+        "#F97316",
+        "#E11D48",
+        "#14B8A6",
+        "#22C55E",
+      ];
+
+      // --- DOM ELEMENTS ---
+      const loginPage = document.getElementById("login-page");
+      const electionPage = document.getElementById("election-page");
+      const loginForm = document.getElementById("login-form");
+      const loginError = document.getElementById("login-error");
+      const logoutButton = document.getElementById("logout-button");
+      const votingSection = document.getElementById("voting-section");
+      const resultsSection = document.getElementById("results-section");
+      const welcomeMessage = document.getElementById("welcome-message");
+      const kaprodiCandidatesContainer = document.getElementById(
+        "kaprodi-candidates-container"
+      );
+      const sekprodiCandidatesContainer = document.getElementById(
+        "sekprodi-candidates-container"
+      );
+      const kaprodiCtx = document
+        .getElementById("kaprodiResultsChart")
+        .getContext("2d");
+      const sekprodiCtx = document
+        .getElementById("sekprodiResultsChart")
+        .getContext("2d");
+
+      let kaprodiResultsChart, sekprodiResultsChart;
+      let unsubKaprodi = null,
+        unsubSekprodi = null;
+
+      // --- DATA FUNCTIONS (Firestore) ---
+      function getElectionTitle(electionId) {
+        if (electionId === KAPRODI_ELECTION_ID) return "Pemilihan Kaprodi 2025";
+        if (electionId === SEKPRODI_ELECTION_ID)
+          return "Pemilihan Sekprodi 2025";
+        return "Pemilihan Umum";
+      }
+
+      const getInitialElectionData = (candidates, electionId) => ({
+        election_title: getElectionTitle(electionId),
+        votes: candidates.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {}),
+        voters: {},
+        log: [],
+      });
+
+      // Use ELECTION_COLLECTION when referencing documents
+      async function castVotes(electionId, candidateIds, username, candidates) {
+        const electionRef = doc(db, ELECTION_COLLECTION, electionId); // Changed collection
+        try {
+          await runTransaction(db, async (transaction) => {
+            const electionDoc = await transaction.get(electionRef);
+            const electionData = electionDoc.exists()
+              ? electionDoc.data()
+              : getInitialElectionData(candidates, electionId);
+
+            if (electionData.voters && electionData.voters[username])
+              throw new Error("User has already voted.");
+
+            const newVotes = { ...electionData.votes };
+            const newLog = electionData.log ? [...electionData.log] : [];
+
+            for (const candidateId of candidateIds) {
+              newVotes[candidateId] = (newVotes[candidateId] || 0) + 1;
+              const candidate = candidates.find((c) => c.id === candidateId);
+              if (candidate) {
+                newLog.push({
+                  voter: username,
+                  candidateName: candidate.name,
+                  timestamp: new Date().toISOString(),
+                });
+              }
+            }
+
+            const newVoters = { ...electionData.voters, [username]: true };
+
+            const dataToWrite = {
+              votes: newVotes,
+              voters: newVoters,
+              log: newLog,
+            };
+            if (!electionDoc.exists()) {
+              dataToWrite.election_title = getElectionTitle(electionId);
+              transaction.set(electionRef, dataToWrite);
+            } else {
+              transaction.update(electionRef, dataToWrite);
+            }
+          });
+          return true;
+        } catch (e) {
+          console.error(`Vote transaction for ${electionId} failed:`, e);
+          return false;
+        }
+      }
+
+      async function checkIfVoted(electionId, username) {
+        const electionDoc = await getDoc(
+          doc(db, ELECTION_COLLECTION, electionId)
+        ); // Changed collection
+        return (
+          electionDoc.exists() && electionDoc.data().voters?.[username] === true
+        );
+      }
+
+      const getLoggedInUser = () => sessionStorage.getItem("loggedInUser");
+      const isAdmin = () => sessionStorage.getItem("isAdmin") === "true";
+
+      // --- UI FUNCTIONS ---
+      function renderCheckboxCandidates(
+        container,
+        candidates,
+        electionIdPrefix,
+        hasVoted
+      ) {
+        container.innerHTML = candidates
+          .map(
+            (c) => `
+                <div class="border border-gray-200 rounded-lg p-4 flex items-center justify-between transition-all hover:shadow-md">
+                    <div class="flex items-center">
+                        <img src="${c.photo}" alt="${
+              c.name
+            }" class="w-16 h-16 rounded-full mr-4">
+                        <div class="flex-1 min-w-0"><h3 class="text-lg font-semibold truncate">${
+                          c.name
+                        }</h3></div>
+                    </div>
+                    <input type="checkbox" value="${
+                      c.id
+                    }" class="${electionIdPrefix}-checkbox h-6 w-6 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" ${
+              hasVoted ? "disabled" : ""
+            }>
+                </div>`
+          )
+          .join("");
+      }
+
+      function renderButtonCandidates(
+        container,
+        candidates,
+        electionId,
+        hasVoted
+      ) {
+        container.innerHTML = candidates
+          .map(
+            (c) => `
+                <div class="border border-gray-200 rounded-lg p-4 flex items-center justify-between transition-all hover:shadow-md">
+                    <div class="flex items-center"><img src="${c.photo}" alt="${
+              c.name
+            }" class="w-16 h-16 rounded-full mr-4">
+                        <div><h3 class="text-lg font-semibold">${
+                          c.name
+                        }</h3></div>
+                    </div>
+                    <button data-candidate-id="${
+                      c.id
+                    }" data-election-id="${electionId}" class="vote-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-lg w-28 text-center">
+                        ${hasVoted ? "Voted" : "Vote"}
+                    </button>
+                </div>`
+          )
+          .join("");
+        if (hasVoted) {
+          container
+            .querySelectorAll(".vote-btn")
+            .forEach((btn) => (btn.disabled = true));
+        }
+      }
+
+      function updateResultsUI(
+        chart,
+        summaryEl,
+        logEl,
+        candidates,
+        electionData
+      ) {
+        const { votes, log } =
+          electionData ||
+          getInitialElectionData(candidates, chart.electionId || "");
+        summaryEl.innerHTML = `<h3 class="text-xl font-bold mb-4">Total Suara</h3><div class="space-y-2">${candidates
+          .map(
+            (c) =>
+              `<p class="text-lg">${c.name}: <span class="font-bold">${
+                votes[c.id] || 0
+              }</span></p>`
+          )
+          .join("")}</div>`;
+        logEl.innerHTML =
+          log && log.length > 0
+            ? `<ul class="space-y-2">${log
+                .slice()
+                .reverse()
+                .map(
+                  (e) =>
+                    `<li class="text-sm p-2 bg-white rounded shadow-sm">Voted for <b>${
+                      e.candidateName
+                    }</b> at ${new Date(e.timestamp).toLocaleString(
+                      "id-ID"
+                    )}</li>`
+                )
+                .join("")}</ul>`
+            : `<p class="text-gray-500 text-center">Tidak ada suara yang masuk.</p>`;
+        const chartData = candidates.map((c) => votes[c.id] || 0);
+
+        if (chart.instance) {
+          chart.instance.data.datasets[0].data = chartData;
+          chart.instance.data.labels = candidates.map((c) => c.name);
+          chart.instance.update();
+        } else {
+          chart.instance = new Chart(chart.ctx, {
+            type: "pie",
+            data: {
+              labels: candidates.map((c) => c.name),
+              datasets: [
+                {
+                  label: "Votes",
+                  data: chartData,
+                  backgroundColor: chartColors.slice(0, candidates.length),
+                  borderColor: "#FFFFFF",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { position: "top" } },
+            },
+          });
+        }
+      }
+
+      function setupAdminView() {
+        votingSection.classList.add("hidden");
+        resultsSection.classList.remove("hidden");
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold text-indigo-600">${getLoggedInUser()}</span>! Hasil Pemilihan Suara.`;
+
+        // Use ELECTION_COLLECTION in doc references
+        const kaprodiElements = {
+          chart: {
+            ctx: kaprodiCtx,
+            instance: kaprodiResultsChart,
+            electionId: KAPRODI_ELECTION_ID,
+          },
+          summaryEl: document.getElementById("kaprodi-results-summary"),
+          logEl: document.getElementById("kaprodi-vote-log-container"),
+        };
+        unsubKaprodi = onSnapshot(
+          doc(db, ELECTION_COLLECTION, KAPRODI_ELECTION_ID),
+          (doc) =>
+            updateResultsUI(
+              kaprodiElements.chart,
+              kaprodiElements.summaryEl,
+              kaprodiElements.logEl,
+              kaprodiCandidates,
+              doc.data()
+            )
+        );
+
+        const sekprodiElements = {
+          chart: {
+            ctx: sekprodiCtx,
+            instance: sekprodiResultsChart,
+            electionId: SEKPRODI_ELECTION_ID,
+          },
+          summaryEl: document.getElementById("sekprodi-results-summary"),
+          logEl: document.getElementById("sekprodi-vote-log-container"),
+        };
+        unsubSekprodi = onSnapshot(
+          doc(db, ELECTION_COLLECTION, SEKPRODI_ELECTION_ID),
+          (doc) =>
+            updateResultsUI(
+              sekprodiElements.chart,
+              sekprodiElements.summaryEl,
+              sekprodiElements.logEl,
+              sekprodiCandidates,
+              doc.data()
+            )
+        );
+      }
+
+      async function setupVoterView() {
+        const username = getLoggedInUser();
+        resultsSection.classList.add("hidden");
+        votingSection.classList.remove("hidden");
+        welcomeMessage.innerHTML = `Welcome, <span class="font-bold">${username}</span>! Silakan berikan suara Anda.`;
+
+        const hasVotedKaprodi = await checkIfVoted(
+          KAPRODI_ELECTION_ID,
+          username
+        );
+        renderCheckboxCandidates(
+          kaprodiCandidatesContainer,
+          kaprodiCandidates,
+          "kaprodi",
+          hasVotedKaprodi
+        );
+        const submitKaprodiBtn = document.getElementById(
+          "submit-kaprodi-vote-btn"
+        );
+        if (hasVotedKaprodi) {
+          document
+            .getElementById("kaprodi-already-voted")
+            .classList.remove("hidden");
+          submitKaprodiBtn.disabled = true;
+        }
+
+        const hasVotedSekprodi = await checkIfVoted(
+          SEKPRODI_ELECTION_ID,
+          username
+        );
+        renderButtonCandidates(
+          sekprodiCandidatesContainer,
+          sekprodiCandidates,
+          SEKPRODI_ELECTION_ID,
+          hasVotedSekprodi
+        );
+        if (hasVotedSekprodi)
+          document
+            .getElementById("sekprodi-already-voted")
+            .classList.remove("hidden");
+      }
+
+      // --- Main App Logic ---
+      function showMainApp() {
+        loginPage.classList.add("hidden");
+        electionPage.classList.remove("hidden");
+        isAdmin() ? setupAdminView() : setupVoterView();
+      }
+
+      function handleLogout() {
+        sessionStorage.clear();
+        if (unsubKaprodi) unsubKaprodi();
+        if (unsubSekprodi) unsubSekprodi();
+        electionPage.classList.add("hidden");
+        loginPage.classList.remove("hidden");
+      }
+
+      // --- EVENT LISTENERS ---
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        const user = userDatabase[username];
+        if (
+          user &&
+          user.password === document.getElementById("password").value
+        ) {
+          sessionStorage.setItem("loggedInUser", username);
+          sessionStorage.setItem("isAdmin", user.isAdmin);
+          loginForm.reset();
+          showMainApp();
+        } else {
+          loginError.classList.remove("hidden");
+        }
+      });
+
+      logoutButton.addEventListener("click", handleLogout);
+
+      const handleCheckboxLimit = (
+        containerSelector,
+        checkboxClass,
+        limit,
+        electionIdPrefix
+      ) => {
+        const container = document.querySelector(containerSelector);
+        if (!container) return;
+        container.addEventListener("change", (e) => {
+          if (e.target.classList.contains(checkboxClass)) {
+            const checkedBoxes = container.querySelectorAll(
+              `.${checkboxClass}:checked`
+            );
+            const alreadyVotedMsg = document.getElementById(
+              `${electionIdPrefix}-already-voted`
+            );
+            const hasAlreadyVoted =
+              alreadyVotedMsg && !alreadyVotedMsg.classList.contains("hidden");
+
+            if (checkedBoxes.length >= limit) {
+              container
+                .querySelectorAll(`.${checkboxClass}:not(:checked)`)
+                .forEach((cb) => (cb.disabled = true));
+            } else if (!hasAlreadyVoted) {
+              container
+                .querySelectorAll(`.${checkboxClass}:not(:checked)`)
+                .forEach((cb) => (cb.disabled = false));
+            }
+          }
+        });
+      };
+
+      handleCheckboxLimit(
+        "#kaprodi-candidates-container",
+        "kaprodi-checkbox",
+        2,
+        "kaprodi"
+      );
+
+      votingSection.addEventListener("click", async (e) => {
+        const username = getLoggedInUser();
+
+        if (e.target.matches(".vote-btn:not(:disabled)")) {
+          e.target.disabled = true;
+          e.target.textContent = "Submitting...";
+          const { candidateId, electionId } = e.target.dataset;
+
+          if (electionId === SEKPRODI_ELECTION_ID) {
+            const success = await castVotes(
+              electionId,
+              [candidateId],
+              username,
+              sekprodiCandidates
+            );
+            if (success) {
+              document
+                .getElementById("sekprodi-vote-success")
+                .classList.remove("hidden");
+              document
+                .querySelectorAll(`[data-election-id="${electionId}"]`)
+                .forEach((btn) => {
+                  btn.disabled = true;
+                  btn.textContent = "Voted";
+                });
+            } else {
+              alert("Failed to cast vote. Please refresh and try again.");
+              e.target.disabled = false;
+              e.target.textContent = "Vote";
+            }
+          } else {
+            e.target.disabled = false;
+            e.target.textContent = "Vote";
+          }
+        }
+
+        if (e.target.matches("#submit-kaprodi-vote-btn:not(:disabled)")) {
+          e.target.disabled = true;
+          e.target.textContent = "Submitting...";
+          const checkedBoxes = kaprodiCandidatesContainer.querySelectorAll(
+            ".kaprodi-checkbox:checked"
+          );
+          const selectedIds = Array.from(checkedBoxes).map((cb) => cb.value);
+
+          if (selectedIds.length === 0 || selectedIds.length > 2) {
+            alert("Please select 1 or 2 candidates for Kaprodi.");
+            e.target.disabled = false;
+            e.target.textContent = "Submit Kaprodi Votes";
+            return;
+          }
+          const success = await castVotes(
+            KAPRODI_ELECTION_ID,
+            selectedIds,
+            username,
+            kaprodiCandidates
+          );
+          if (success) {
+            document
+              .getElementById("kaprodi-vote-success")
+              .classList.remove("hidden");
+            kaprodiCandidatesContainer
+              .querySelectorAll(".kaprodi-checkbox")
+              .forEach((cb) => (cb.disabled = true));
+          } else {
+            alert("Failed to cast Kaprodi vote. Please refresh the page.");
+            e.target.disabled = false;
+            e.target.textContent = "Submit Kaprodi Votes";
+          }
+        }
+      });
+
+      resultsSection.addEventListener("click", async (e) => {
+        const targetId = e.target.id;
+        let electionName, electionId, candidates;
+
+        if (targetId === "reset-kaprodi-button") {
+          electionName = "Kaprodi";
+          electionId = KAPRODI_ELECTION_ID;
+          candidates = kaprodiCandidates;
+        } else if (targetId === "reset-sekprodi-button") {
+          electionName = "Sekprodi";
+          electionId = SEKPRODI_ELECTION_ID;
+          candidates = sekprodiCandidates;
+        } else {
+          return;
+        }
+
+        if (
+          confirm(
+            `Are you sure you want to reset the ${electionName} election data? This is irreversible.`
+          )
+        ) {
+          try {
+            // Use ELECTION_COLLECTION in doc reference for reset
+            await setDoc(
+              doc(db, ELECTION_COLLECTION, electionId),
+              getInitialElectionData(candidates, electionId)
+            );
+            alert(`${electionName} election data has been reset successfully.`);
+          } catch (error) {
+            console.error(`Error resetting ${electionName}:`, error);
+            alert(`Failed to reset ${electionName} election data.`);
+          }
+        }
+      });
+
+      // --- INITIALIZATION ---
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("Firebase anonymous auth successful, UID:", user.uid);
+          if (getLoggedInUser()) showMainApp();
+          else {
+            electionPage.classList.add("hidden");
+            loginPage.classList.remove("hidden");
+          }
+        } else {
+          handleLogout();
+          signInAnonymously(auth).catch((error) =>
+            console.error("Anonymous sign-in failed", error)
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
